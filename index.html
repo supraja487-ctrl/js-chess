@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chess Game</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f0f0f0;
+}
+
+#chess-board {
+  display: grid;
+  grid-template-columns: repeat(8, 60px);
+  grid-template-rows: repeat(8, 60px);
+  border: 2px solid #333;
+  margin-top: 20px;
+}
+
+.square {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+}
+
+.dark {
+  background-color:grey;
+}
+
+.light {
+  background-color: whitesmoke;
+}
+
+.square.piece {
+  cursor: pointer;
+}
+
+.square.selected {
+  border: 2px solid red;
+}
+
+  </style>
+  
+</head>
+<body>
+  <h1>Chess Board</h1>
+  <div id="chess-board"></div>
+  <script>
+    const boardElement = document.getElementById("chess-board");
+const board = [
+  ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
+  ["♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
+  ["", "", "", "", "", "", "", ""],
+  ["", "", "", "", "", "", "", ""],
+  ["", "", "", "", "", "", "", ""],
+  ["", "", "", "", "", "", "", ""],
+  ["♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
+  ["♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"]
+];
+
+let selectedSquare = null;
+
+function renderBoard() {
+  boardElement.innerHTML = ""; 
+
+  board.forEach((row, rowIndex) => {
+    row.forEach((piece, colIndex) => {
+      const square = document.createElement("div");
+      square.classList.add("square");
+      square.classList.add((rowIndex + colIndex) % 2 === 0 ? "light" : "dark");
+      square.innerHTML = piece;
+      square.dataset.row = rowIndex;
+      square.dataset.col = colIndex;
+
+      if (piece) {
+        square.classList.add("piece");
+      }
+
+      square.addEventListener("click", onSquareClick);
+      boardElement.appendChild(square);
+    });
+  });
+}
+
+function onSquareClick(event) {
+  const row = event.target.dataset.row;
+  const col = event.target.dataset.col;
+
+  if (selectedSquare) {
+    movePiece(selectedSquare.row, selectedSquare.col, row, col);
+    selectedSquare = null;
+  } else {
+    selectedSquare = { row, col };
+    event.target.classList.add("selected");
+  }
+}
+
+function movePiece(fromRow, fromCol, toRow, toCol) {
+  if (board[toRow][toCol] === "") {
+    board[toRow][toCol] = board[fromRow][fromCol];
+    board[fromRow][fromCol] = "";
+  }
+
+  renderBoard(); 
+}
+
+renderBoard();
+
+      
+  </script>
+</body>
+</html>
